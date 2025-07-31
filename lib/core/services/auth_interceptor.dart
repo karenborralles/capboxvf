@@ -12,11 +12,11 @@ class AuthInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     try {
-      print('🔑 AUTH INTERCEPTOR: Procesando petición a ${options.uri}');
+      print('AUTH INTERCEPTOR: Procesando petición a ${options.uri}');
 
       // Verificar si es un endpoint público
       if (_isPublicEndpoint(options.path)) {
-        print('🌐 AUTH INTERCEPTOR: Endpoint público - sin token requerido');
+        print('AUTH INTERCEPTOR: Endpoint público - sin token requerido');
         return super.onRequest(options, handler);
       }
 
@@ -25,49 +25,44 @@ class AuthInterceptor extends Interceptor {
 
       if (accessToken != null) {
         options.headers['Authorization'] = 'Bearer $accessToken';
-        print('🔑 AUTH INTERCEPTOR: Token agregado a la petición');
-        print('🔍 AUTH INTERCEPTOR: Token: ${accessToken.substring(0, 50)}...');
-        print('📋 AUTH INTERCEPTOR: Headers: ${options.headers}');
+        print(' AUTH INTERCEPTOR: Token agregado a la petición');
+        print(' AUTH INTERCEPTOR: Token: ${accessToken.substring(0, 50)}...');
+        print(' AUTH INTERCEPTOR: Headers: ${options.headers}');
       } else {
         print(
-          '⚠️ AUTH INTERCEPTOR: No hay token disponible para endpoint privado',
+          'AUTH INTERCEPTOR: No hay token disponible para endpoint privado',
         );
         print(
-          '❌ AUTH INTERCEPTOR: Endpoint requiere autenticación pero no hay token',
+          ' AUTH INTERCEPTOR: Endpoint requiere autenticación pero no hay token',
         );
-        // Podrías decidir si rechazar la petición o continuar sin token
-        // Para pruebas, continuamos sin token
       }
 
       return super.onRequest(options, handler);
     } catch (e) {
-      print('❌ AUTH INTERCEPTOR: Error procesando petición - $e');
+      print(' AUTH INTERCEPTOR: Error procesando petición - $e');
       return super.onRequest(options, handler);
     }
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    print('✅ AUTH INTERCEPTOR: Respuesta exitosa ${response.statusCode}');
+    print(' AUTH INTERCEPTOR: Respuesta exitosa ${response.statusCode}');
     super.onResponse(response, handler);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    print('❌ AUTH INTERCEPTOR: Error ${err.response?.statusCode}');
+    print(' AUTH INTERCEPTOR: Error ${err.response?.statusCode}');
 
-    // Si es 401, el token probablemente expiró
     if (err.response?.statusCode == 401) {
       print(
-        '🔐 AUTH INTERCEPTOR: Token expirado o inválido - usuario debe reautenticarse',
+        ' AUTH INTERCEPTOR: Token expirado o inválido - usuario debe reautenticarse',
       );
-      // Aquí podrías implementar lógica para refrescar el token automáticamente
     }
 
     super.onError(err, handler);
   }
 
-  /// Verificar si un endpoint es público (no requiere autenticación)
   bool _isPublicEndpoint(String path) {
     final publicEndpoints = [
       '/auth/register',

@@ -1,18 +1,15 @@
 class PlanningRepository {
   Future<List<Routine>> getRoutines({String? nivel}) async {
-    // Simulate fetching routines
     await Future.delayed(Duration(seconds: 2));
     return [Routine(id: '1', name: 'Rutina Básica')];
   }
 
   Future<RoutineDetail> getRoutineDetail(String id) async {
-    // Simulate fetching routine detail
     await Future.delayed(Duration(seconds: 2));
     return RoutineDetail(id: id, name: 'Rutina Básica Detallada');
   }
 
   Future<List<Assignment>> getMyAssignments() async {
-    // Simulate fetching assignments
     await Future.delayed(Duration(seconds: 2));
     return [Assignment(id: '1', name: 'Asignación 1')];
   }

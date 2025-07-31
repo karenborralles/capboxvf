@@ -28,61 +28,46 @@ List<SingleChildWidget> appProviders = [
       ),
     ),
   ),
-  // Servicio de autenticación OAuth2
   Provider<AuthService>(
     create: (context) => AuthService(context.read<Dio>()),
   ),
-  // Servicio de API con autenticación OAuth2
   Provider<AWSApiService>(
     create: (context) => AWSApiService(context.read<AuthService>()),
   ),
-  // Servicio de datos de display del usuario
   Provider<UserDisplayService>(
     create: (context) =>
         UserDisplayService(context.read<AuthService>(), context.read<AWSApiService>()),
   ),
-  // Servicio de gestión de gimnasio
   Provider<GymService>(
     create: (context) => GymService(context.read<AWSApiService>()),
   ),
-  // Servicio de clave del gimnasio para admin
   Provider<AdminGymKeyService>(
     create: (context) => AdminGymKeyService(context.read<AWSApiService>()),
   ),
-  // Servicio de estadísticas del usuario
   Provider<UserStatsService>(
     create: (context) => UserStatsService(context.read<AWSApiService>()),
   ),
-  // Servicio de clave del gimnasio
   Provider<GymKeyService>(
     create: (context) => GymKeyService(context.read<AWSApiService>()),
   ),
-  // Cubit de gestión del gimnasio
   ChangeNotifierProvider<GymManagementCubit>(
     create: (context) => GymManagementCubit(context.read<GymService>()),
   ),
-  // Cubit de clave del gimnasio para admin
   ChangeNotifierProvider<AdminGymKeyCubit>(
     create: (context) => AdminGymKeyCubit(context.read<AdminGymKeyService>()),
   ),
-  // Cubit de estadísticas del usuario
   ChangeNotifierProvider<UserStatsCubit>(
     create: (context) => UserStatsCubit(context.read<UserStatsService>()),
   ),
-  // Cubit de clave del gimnasio
   ChangeNotifierProvider<GymKeyCubit>(
     create: (context) => GymKeyCubit(context.read<GymKeyService>()),
   ),
-  // Cubit de activación con clave del gimnasio
   ChangeNotifierProvider<GymKeyActivationCubit>(
     create: (context) =>
         GymKeyActivationCubit(context.read<AWSApiService>(), context.read<AuthService>()),
   ),
-  // Nuevos providers con AWS Cognito
   ...awsAuthProviders,
-  // Mantener providers de planificación
   ...planningProviders,
-  // Cubits y repositorios adicionales
   Provider<LoginCubit>(create: (_) => LoginCubit()),
   Provider<PlanningRepository>(create: (_) => PlanningRepository()),
 ];

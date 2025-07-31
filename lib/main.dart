@@ -4,12 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'core/router/app_router.dart';
-import 'core/dependency_injection/dependency_injection.dart'; // Importar el archivo de dependencias
+import 'core/dependency_injection/dependency_injection.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Cargar variables de entorno desde .env
   await dotenv.load(fileName: ".env");
 
   runApp(const CapBoxApp());
@@ -21,7 +20,7 @@ class CapBoxApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: appProviders, // Usar los providers desde el archivo separado
+      providers: appProviders, 
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'CapBox',

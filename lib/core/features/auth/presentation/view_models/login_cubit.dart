@@ -10,7 +10,6 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> login(String email, String password) async {
     try {
       emit(LoginLoading());
-      // Simulate login logic
       await Future.delayed(Duration(seconds: 2));
       if (email == 'test@email.com' && password == 'password123') {
         isAuthenticated = true;
@@ -29,7 +28,6 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<void> checkAuthStatus() async {
-    // Simulate checking authentication status
     await Future.delayed(Duration(seconds: 1));
     emit(isAuthenticated ? LoginSuccess() : LoginInitial());
   }

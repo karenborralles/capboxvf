@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'dart:convert'; // Added for json and base64Url
-import '../api/api_config.dart'; // CORREGIDO: Agregar import de ApiConfig
+import 'dart:convert'; 
+import '../api/api_config.dart'; 
 
-// Modelo para la respuesta del token (fuerte tipado)
 class AuthTokenResponse {
   final String accessToken;
   final String refreshToken;
@@ -34,14 +33,13 @@ class AuthService {
   // Asumimos que el ApiService principal inyecta Dio ya configurado.
   AuthService(this._dio) : _secureStorage = const FlutterSecureStorage();
 
-  /// Iniciar sesión con OAuth2
   Future<AuthTokenResponse> iniciarSesion(String email, String password) async {
     try {
-      print('🚀 AUTH: Iniciando sesión con OAuth2');
-      print('📧 AUTH: Email: $email');
-      print('🔑 AUTH: Client ID: ${ApiConfig.oauthClientId}');
-      print('🔐 AUTH: Client Secret: ${ApiConfig.oauthClientSecret}');
-      print('🔍 AUTH: Verificando credenciales desde .env...');
+      print(' AUTH: Iniciando sesión con OAuth2');
+      print(' AUTH: Email: $email');
+      print(' AUTH: Client ID: ${ApiConfig.oauthClientId}');
+      print(' AUTH: Client Secret: ${ApiConfig.oauthClientSecret}');
+      print(' AUTH: Verificando credenciales desde .env...');
 
       final formData = {
         'grant_type': 'password',
@@ -51,7 +49,7 @@ class AuthService {
         'password': password,
       };
 
-      print('📤 AUTH: Datos enviados al backend:');
+      print(' AUTH: Datos enviados al backend:');
       print(formData);
 
       final response = await _dio.post(
@@ -63,8 +61,8 @@ class AuthService {
         ),
       );
 
-      print('📊 AUTH: Status Code: ${response.statusCode}');
-      print('📋 AUTH: Respuesta del backend: ${response.data}');
+      print(' AUTH: Status Code: ${response.statusCode}');
+      print(' AUTH: Respuesta del backend: ${response.data}');
 
       if (response.statusCode == 200) {
         final tokenResponse = AuthTokenResponse.fromJson(response.data);
@@ -76,16 +74,16 @@ class AuthService {
           key: 'refresh_token',
           value: tokenResponse.refreshToken,
         );
-        print('💾 AUTH: Tokens guardados en almacenamiento seguro');
+        print(' AUTH: Tokens guardados en almacenamiento seguro');
         return tokenResponse;
       } else {
-        print('❌ AUTH: Error del servidor - Status: ${response.statusCode}');
-        print('❌ AUTH: Respuesta de error: ${response.data}');
+        print(' AUTH: Error del servidor - Status: ${response.statusCode}');
+        print(' AUTH: Respuesta de error: ${response.data}');
         throw Exception('Error en autenticación: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      print('❌ AUTH: Error de Dio - ${e.response?.statusCode}');
-      print('❌ AUTH: Respuesta del servidor - ${e.response?.data}');
+      print(' AUTH: Error de Dio - ${e.response?.statusCode}');
+      print(' AUTH: Respuesta del servidor - ${e.response?.data}');
 
       if (e.response?.statusCode == 401) {
         final errorData = e.response?.data;
@@ -119,7 +117,7 @@ class AuthService {
 
       throw Exception('Error en autenticación: ${e.response?.statusCode}');
     } catch (e) {
-      print('❌ AUTH: Error inesperado - $e');
+      print(' AUTH: Error inesperado - $e');
       rethrow;
     }
   }
@@ -179,15 +177,15 @@ class AuthService {
           key: 'refresh_token',
           value: tokenResponse.refreshToken,
         );
-        print('🔄 AUTH: Token refrescado exitosamente');
+        print(' AUTH: Token refrescado exitosamente');
         return tokenResponse;
       }
       return null;
     } on DioException catch (e) {
-      print('❌ AUTH: Error refrescando token - ${e.response?.data}');
+      print(' AUTH: Error refrescando token - ${e.response?.data}');
       return null;
     } catch (e) {
-      print('❌ AUTH: Error inesperado refrescando token - $e');
+      print(' AUTH: Error inesperado refrescando token - $e');
       return null;
     }
   }
@@ -234,7 +232,7 @@ class AuthService {
     try {
       final token = await getAccessToken();
       if (token == null) {
-        print('⚠️ AUTH: No hay token disponible para obtener atributos');
+        print(' AUTH: No hay token disponible para obtener atributos');
         return [];
       }
 

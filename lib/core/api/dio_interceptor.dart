@@ -10,9 +10,7 @@ class ApiInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // No modificar base URL si ya tiene una (se maneja en los API clients)
     if (!options.path.startsWith('http') && options.baseUrl.isEmpty) {
-      // Determinar qué microservicio usar basado en el path
       if (_isIdentidadEndpoint(options.path)) {
         options.baseUrl = ApiConfig.identidadBaseUrl;
       } else if (_isPlanificacionEndpoint(options.path)) {
@@ -20,7 +18,6 @@ class ApiInterceptor extends Interceptor {
       }
     }
 
-    // Add auth token if available (excepto para login y register)
     if (!_isPublicEndpoint(options.path)) {
       final token = await _secureStorage.read(key: 'auth_token');
       if (token != null) {
@@ -28,17 +25,16 @@ class ApiInterceptor extends Interceptor {
       }
     }
 
-    // Add default headers
     options.headers.addAll(ApiConfig.defaultHeaders);
 
-    print('🚀 REQUEST: ${options.method} ${options.uri}');
-    print('📦 DATA: ${options.data}');
-    print('🔑 HEADERS: ${options.headers}');
+    print(' REQUEST: ${options.method} ${options.uri}');
+    print(' DATA: ${options.data}');
+    print(' HEADERS: ${options.headers}');
 
     handler.next(options);
   }
 
-  /// Verificar si el endpoint es del microservicio de identidad
+  /// para verificar si el endpoint es del microservicio de identidad
   bool _isIdentidadEndpoint(String path) {
     return path.contains('/auth/') ||
         path.contains('/oauth/') ||
@@ -48,36 +44,34 @@ class ApiInterceptor extends Interceptor {
         path.contains('/gyms/');
   }
 
-  /// Verificar si el endpoint es del microservicio de planificación
+  /// para ver si el endpoint es del microservicio de planificación
   bool _isPlanificacionEndpoint(String path) {
     return path.contains('/planning/');
   }
 
-  /// Verificar si el endpoint es público (no requiere token)
+  /// ver si el endpoint es público (no requiere token)
   bool _isPublicEndpoint(String path) {
     return path.contains('/auth/register') || path.contains('/oauth/token');
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    print('✅ RESPONSE: ${response.statusCode} ${response.requestOptions.uri}');
-    print('📥 DATA: ${response.data}');
+    print('RESPONSE: ${response.statusCode} ${response.requestOptions.uri}');
+    print('DATA: ${response.data}');
     handler.next(response);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    print('❌ ERROR: ${err.response?.statusCode} ${err.requestOptions.uri}');
-    print('💥 MESSAGE: ${err.message}');
-    print('📄 RESPONSE: ${err.response?.data}');
+    print(' ERROR: ${err.response?.statusCode} ${err.requestOptions.uri}');
+    print(' MESSAGE: ${err.message}');
+    print(' RESPONSE: ${err.response?.data}');
 
-    // 🔧 CORRECCIÓN IMPLEMENTADA: Manejar errores null
     if (err.response == null) {
-      print('⚠️ ERROR NULL: Respuesta del servidor es null');
-      print('🔍 ERROR NULL: Tipo de error: ${err.type}');
-      print('🔍 ERROR NULL: Mensaje: ${err.message}');
+      print(' ERROR NULL: Respuesta del servidor es null');
+      print(' ERROR NULL: Tipo de error: ${err.type}');
+      print(' ERROR NULL: Mensaje: ${err.message}');
 
-      // Crear error más descriptivo
       final descriptiveError = DioException(
         requestOptions: err.requestOptions,
         response: err.response,
@@ -89,13 +83,11 @@ class ApiInterceptor extends Interceptor {
       return;
     }
 
-    // Handle 401 Unauthorized - Token expired
     if (err.response?.statusCode == 401) {
       await _handleTokenRefresh(err, handler);
       return;
     }
 
-    // Handle other HTTP errors
     final errorMessage = _getErrorMessage(err);
     final customError = DioException(
       requestOptions: err.requestOptions,
@@ -112,16 +104,13 @@ class ApiInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     try {
-      // Attempt to refresh token
       final refreshToken = await _secureStorage.read(key: 'refresh_token');
       if (refreshToken == null) {
-        // No refresh token available, user needs to login again
         await _secureStorage.deleteAll();
         handler.next(err);
         return;
       }
 
-      // Create a new Dio instance to avoid interceptor recursion
       final dio = Dio();
       final response = await dio.post(
         ApiConfig.getIdentidadUrl(ApiConfig.oauthToken),
@@ -143,7 +132,6 @@ class ApiInterceptor extends Interceptor {
           value: newRefreshToken,
         );
 
-        // Retry the original request with new token
         final options = err.requestOptions;
         options.headers['Authorization'] = 'Bearer $newToken';
 

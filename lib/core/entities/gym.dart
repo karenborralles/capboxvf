@@ -1,7 +1,7 @@
 class Gym {
   final String id;
-  final String ownerId; // FK to users
-  final String gymKey; // Unique identifier for gym
+  final String ownerId; // FK de users
+  final String gymKey; // Unica clave para el gimnasio
   final String name;
 
   Gym({

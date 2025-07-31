@@ -1,49 +1,38 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-/// Configuración de endpoints de la API
 class ApiConfig {
-  // URL base del API Gateway
   static const String baseUrl = 'https://api.capbox.site';
 
-  // ==============================
-  // CREDENCIALES OAUTH2 (APP MÓVIL - ACTUALIZADAS)
-  // ==============================
   static String get oauthClientId =>
       dotenv.env['OAUTH_CLIENT_ID'] ?? 'capbox-mobile-app';
   static String get oauthClientSecret =>
       dotenv.env['OAUTH_CLIENT_SECRET'] ?? 'capbox-secret-key-2024';
 
-  // ==============================
-  // ENDPOINTS DE AUTENTICACIÓN (IDENTITY)
-  // ==============================
+  // ENDPOINTS DE AUTENTICACIÓN 
   static const String register = '/identity/v1/auth/register';
   static const String oauthToken =
-      '/identity/v1/oauth/token'; // ✅ CORRECTO: Según documentación oficial del backend
+      '/identity/v1/oauth/token'; 
   static const String oauthRefresh =
-      '/identity/v1/oauth/token/refresh'; // CORREGIDO: /refresh
-  static const String userProfile = '/identity/v1/usuarios/me'; // ✅ CORRECTO
+      '/identity/v1/oauth/token/refresh'; 
+  static const String userProfile = '/identity/v1/usuarios/me'; 
   static const String userGymKey =
-      '/identity/v1/usuarios/gimnasio/clave'; // ✅ CORRECTO
+      '/identity/v1/usuarios/gimnasio/clave'; 
   static const String adminGymKey =
-      '/identity/v1/usuarios/gimnasio/clave'; // ✅ CORRECTO
+      '/identity/v1/usuarios/gimnasio/clave';
   static const String forgotPassword = '/identity/v1/auth/forgot-password';
   static const String resetPassword = '/identity/v1/auth/reset-password';
   static const String logout = '/identity/v1/auth/logout';
   static const String confirmEmail = '/identity/v1/auth/confirm-email';
 
-  // ==============================
-  // ENDPOINTS DE GIMNASIOS (IDENTITY)
-  // ==============================
+  // ENDPOINTS DE GIMNASIOS 
   static const String linkGym =
-      '/identity/v1/gimnasios/vincular'; // CORREGIDO: Según backend
+      '/identity/v1/gimnasios/vincular';
   static const String gymMembers =
-      '/identity/v1/gimnasios/miembros'; // CORREGIDO: Según backend
+      '/identity/v1/gimnasios/miembros'; 
   static String gymMembersByGym(String gymId) =>
-      '/identity/v1/gimnasios/$gymId/miembros'; // CORREGIDO
+      '/identity/v1/gimnasios/$gymId/miembros'; 
 
-  // ==============================
-  // ENDPOINTS DE SOLICITUDES (IDENTITY)
-  // ==============================
+  // ENDPOINTS DE SOLICITUDES 
   static const String pendingRequests = '/identity/v1/requests/pending';
   static String approveAthlete(String athleteId) =>
       '/identity/v1/atletas/$athleteId/aprobar';
@@ -52,15 +41,11 @@ class ApiConfig {
   static String limpiarSolicitudConflictiva(String athleteId) =>
       '/identity/v1/atletas/$athleteId/limpiar-solicitud';
 
-  // ==============================
-  // ENDPOINTS DE USUARIOS (IDENTITY)
-  // ==============================
+  // ENDPOINTS DE USUARIOS 
   static const String userSync =
-      '/identity/v1/usuarios/sync'; // NUEVO: Según backend
+      '/identity/v1/usuarios/sync'; 
 
-  // ==============================
   // ENDPOINTS DE PLANIFICACIÓN
-  // ==============================
   static const String exercises = '/v1/planning/exercises';
   static const String routines = '/v1/planning/routines';
   static String routineById(String id) => '/v1/planning/routines/$id';
@@ -71,9 +56,7 @@ class ApiConfig {
   static String assignmentsByAthlete(String atletaId) =>
       '/v1/planning/assignments/athlete/$atletaId';
 
-  // ==============================
   // ENDPOINTS DE PERFORMANCE
-  // ==============================
   static const String sessions = '/v1/performance/sessions';
   static const String mySessions = '/v1/performance/sessions/me';
   static String sessionsByAthlete(String atletaId) =>
@@ -86,9 +69,7 @@ class ApiConfig {
       '/v1/performance/combat-events/athlete/$atletaId';
   static const String attendance = '/v1/performance/attendance';
 
-  // ==============================
   // URLS BASE (para compatibilidad)
-  // ==============================
   static String get identidadBaseUrl => baseUrl;
   static String get planificacionBaseUrl => baseUrl;
   static String get performanceBaseUrl => baseUrl;
